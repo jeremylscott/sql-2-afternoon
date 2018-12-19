@@ -30,14 +30,58 @@ SELECT a.Name, b.Name FROM SomeTable a JOIN AnotherTable b ON a.someid = b.somei
 <br />
 
 1. Get all invoices where the `UnitPrice` on the `InvoiceLine` is greater than $0.99.
+
+SELECT * 
+FROM playlist
+INNER JOIN playlist_track ON playlist_track.playlist_id = playlist.playlist_id
+INNER JOIN track ON playlist_track.track_id = track.track_id;
+
 2. Get the `InvoiceDate`, customer `FirstName` and `LastName`, and `Total` from all invoices.
+
+SELECT i.invoice_date, c.first_name, c.last_name, i.total
+FROM invoice i
+JOIN customer c ON i.customer_id = c.customer_id;
+
 3. Get the customer `FirstName` and `LastName` and the support rep's `FirstName` and `LastName` from all customers. 
     * Support reps are on the Employee table.
+    
+SELECT c.first_name, c.last_name, e.first_name, e.last_name
+FROM customer c
+JOIN employee e ON e.employee_id = c.support_rep_id;
+    
 4. Get the album `Title` and the artist `Name` from all albums.
+
+SELECT album.title, artist.name
+FROM artist
+JOIN album ON album.artist_id = artist.artist_id;
+
 5. Get all PlaylistTrack TrackIds where the playlist `Name` is Music.
+
+SELECT playlist_track.playlist_track_id
+FROM playlist_track
+JOIN playlist ON playlist_track.playlist_id = playlist.playlist_id
+WHERE playlist.name = 'Music';
+
 6. Get all Track `Name`s for `PlaylistId` 5.
+
+SELECT track.name
+FROM track
+JOIN playlist_track ON playlist_track.track_id = track.track_id;
+
 7. Get all Track `Name`s and the playlist `Name` that they're on ( 2 joins ).
+
+SELECT t.name, p.name
+FROM track t
+JOIN playlist_track pt ON t.track_id = pt.track_id
+JOIN playlist p ON pt.playlist_id = p.playlist_id;
+
 8. Get all Track `Name`s and Album `Title`s that are the genre `"Alternative"` ( 2 joins ).
+
+SELECT track.name, album.title
+FROM track
+JOIN album ON album.album_id = track.album_id
+JOIN genre ON genre.genre_id = track.genre_id
+WHERE genre.name = 'Alternative';
 
 ### Solution
 
