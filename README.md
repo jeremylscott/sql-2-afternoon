@@ -224,11 +224,54 @@ SELECT Name, Email FROM Athlete WHERE AthleteId IN ( SELECT PersonId FROM PieEat
 <br />
 
 1. Get all invoices where the `UnitPrice` on the `InvoiceLine` is greater than $0.99.
+
+SELECT * 
+FROM invoice
+WHERE invoice_id IN (SELECT invoice_id
+               FROM invoice_line
+               WHERE unit_price > .99); 
+
 2. Get all Playlist Tracks where the playlist name is Music.
+
+SELECT *
+FROM playlist_track
+WHERE playlist_id IN (SELECT playlist_id
+          FROM playlist
+          WHERE name = 'Music');
+
 3. Get all Track names for `PlaylistId` 5.
+
+SELECT name
+FROM track
+WHERE track_id IN (SELECT track_id
+                   FROM playlist_track
+                   WHERE playlist_id = 5);
+
 4. Get all tracks where the `Genre` is Comedy.
+
+SELECT name
+FROM track
+WHERE genre_id IN (SELECT genre_id
+                   FROM genre
+                   WHERE name = 'Comedy');
+
 5. Get all tracks where the `Album` is Fireball.
+
+SELECT name
+FROM track
+WHERE album_id IN (SELECT album_id
+                   FROM album
+                   WHERE title = 'Fireball');
+
 6. Get all tracks for the artist Queen ( 2 nested subqueries ).
+
+SELECT *
+FROM track
+WHERE album_id IN (SELECT album_id
+                   FROM album
+                   WHERE artist_id IN (SELECT artist_id
+                                       FROM artist
+                                       WHERE name = 'Queen');
 
 ### Solution
 
@@ -335,11 +378,40 @@ UPDATE Athletes SET sport = 'Picklball' WHERE sport = 'pockleball';
 <br />
 
 1. Find all customers with fax numbers and set those numbers to `null`.
+
+UPDATE customer
+SET fax = null
+WHERE fax IS NOT NULL;
+
 2. Find all customers with no company (null) and set their company to `"Self"`.
+
+UPDATE customer
+SET company = 'Self'
+WHERE company IS NULL;
+
 3. Find the customer `Julia Barnett` and change her last name to `Thompson`.
+
+UPDATE customer
+SET last_name = 'Thompson'
+WHERE first_name = 'Julia' AND last_name = 'Barnett';
+
 4. Find the customer with this email `luisrojas@yahoo.cl` and change his support rep to `4`.
+
+UPDATE customer
+SET support_rep_id = '4'
+WHERE email = 'luisrojas@yahoo.cl';
+
 5. Find all tracks that are the genre `Metal` and have no composer. Set the composer to `"The darkness around us"`.
+
+UPDATE track
+SET composer = 'The darkness around us'
+WHERE composer IS NULL AND genre_id IN (SELECT genre_id
+                   											FROM genre
+                   											WHERE name = 'Metal');
+
 6. Refresh your page to remove all database changes.
+
+DONE
 
 ### Solution
 
@@ -429,8 +501,27 @@ GROUP BY [Column];
 <br />
 
 1. Find a count of how many tracks there are per genre. Display the genre name with the count.
+
+SELECT genre.name, count(track)
+FROM genre
+JOIN track ON track.genre_id = genre.genre_id
+GROUP BY genre.name;
+
 2. Find a count of how many tracks are the `"Pop"` genre and how many tracks are the `"Rock"` genre.
+
+SELECT count(track), genre.name
+FROM track
+JOIN genre ON genre.genre_id = track.genre_id
+WHERE genre.name = 'Pop' OR genre.name = 'Rock'
+GROUP BY genre.name;
+
 3. Find a list of all artists and how many albums they have.
+
+SELECT artist.name, count(title)
+FROM artist
+JOIN album ON album.artist_id = artist.artist_id
+GROUP BY artist.name
+ORDER BY count DESC;
 
 ### Solution
 
@@ -496,8 +587,19 @@ FROM [Table];
 <br />
 
 1. From the `Track` table find a unique list of all `Composer`s.
+
+SELECT DISTINCT composer
+FROM track;
+
 2. From the `Invoice` table find a unique list of all `BillingPostalCode`s.
+
+SELECT DISTINCT billing_postal_code
+FROM invoice;
+
 3. From the `Customer` table find a unique list of all `Company`s.
+
+SELECT DISTINCT company
+FROM customer;
 
 <details>
 
@@ -581,8 +683,22 @@ DELETE FROM [Table] WHERE [Condition]
 
 1. Copy, paste, and run the SQL code from the summary.
 2. Delete all `"bronze"` entries from the table.
+
+DELETE
+FROM practice_delete
+WHERE type = 'bronze';
+
 3. Delete all `"silver"` entries from the table.
+
+DELETE
+FROM practice_delete
+WHERE type = 'silver';
+
 4. Delete all entries whose value is equal to `150`.
+
+DELETE
+FROM practice_delete
+WHERE value = 150;
 
 ### Solution
 
@@ -645,10 +761,37 @@ Let's simulate an e-commerce site. We're going to need users, products, and orde
 * Create 3 tables following the criteria in the summary.
 * Add some data to fill up each table.
   * At least 3 users, 3 products, 3 orders.
+  
+  INSERT INTO users (name,email)
+   VALUES ('jack', 'jack@gmail.com'),
+		   ('jill', 'jill@gmail.com'),
+          ('water', 'water@gmail.com');
+          
+  INSERT INTO products (name,price)
+   VALUES ('hose', 10.99),
+		('rake', 8.99),
+        ('sprinkler', 11.99);
+        
+   INSERT INTO orders (ref)
+   VALUES (123),
+		(234),
+        (453);
+        
 * Run queries against your data.
   * Get all products for the first order.
+  
+  SELECT * 
+ FROM products;
+  
   * Get all orders.
+  
+   SELECT * 
+ FROM orders;
+  
   * Get the total cost of an order ( sum the price of all products on an order ).
+  
+  
+  
 * Add a foreign key reference from Orders to Users.
 * Update the Orders table to link a user to each order.
 * Run queries against your data.
